@@ -11,16 +11,19 @@ const voicePath = './voice';
 // var voiceType = 'normal'; //默认音色为正常女性音色
 var mimeType = ".mp3";
 var errorTimes = 1; //出错次数（完成次数）
-var randomAudioSrc = ['zhutou', 'shabi', 'zhizhang', 'erbaiwu', 'laji', 'mutougeda']; //随机语音数组
-
+var randomAudioSrc = ['zhutou', 'shabi', 'zhizhang', 'erbaiwu', 'laji', 'mutougeda']; //随机语音数组（error）
+var startAudioSrc = ['start', 'start1']; //随机启动语音数组
+var exitAudioSrc = ['exit', 'exit1']; //随机退出语音数组
 //test
 // playAudio(2, 'finish', 'normal', 5);
 // playAudio(2, 'error', 'normal');
+// playAudio(2, 'start', 'normal');
+// playAudio(1, 'exit', 'normal');
 
 /**
  * 播放语音
  * @param {int} num 重复播放次数，默认1
- * @param {string} type 语音播放的类型（目前两种：error,finish），默认error
+ * @param {string} type 语音播放的类型（start,error,finish），默认error
  * @param {string} voiceType 语音的音色，默认normal
  * @param {int} times 出错或者完成的次数，默认1
  * @param {int} delay 每次播放后的间隔秒数，默认1s
@@ -55,6 +58,10 @@ function playSound(type, voiceType, audioSrc) {
         playSrc = soundSrc;
     } else if (type == 'error') {
         playSrc = soundSrc;
+    } else if (type == 'start') {
+        playSrc = soundSrc;
+    } else if (type == 'exit') {
+        playSrc = soundSrc
     }
     return new Promise((resolve, reject) => {
         var sound = spawn("mpg123.exe", [playSrc]);
@@ -68,7 +75,11 @@ function playSound(type, voiceType, audioSrc) {
 function voiceSrc(type = 'error') {
     var src = '';
     var srcArr = []; //语音路径数组（有些语音是多个拼合的）
-    if (type == 'finish') {
+    if (type == 'start') {
+        srcArr.push(randomAudio('start'));
+    } else if (type == 'exit') {
+        srcArr.push(randomAudio('exit'));
+    } else if (type == 'finish') {
         if (9 < errorTimes) {
             errorTimes = errorTimes % 9;
         }
@@ -135,17 +146,27 @@ function voiceSrc(type = 'error') {
                 }
             }
             srcArr.push('error1')
-            srcArr.push(randomAudio());
+            srcArr.push(randomAudio('error'));
         }
     }
     return srcArr;
 }
 
-//随机返回一个骂人的词
-function randomAudio() {
-    let len = randomAudioSrc.length;
-    let index = getRndInteger(0, len);
-    return randomAudioSrc[index];
+//随机返回一个词
+function randomAudio(type = 'error') {
+    if (type == 'start') {
+        let len = startAudioSrc.length;
+        let index = getRndInteger(0, len);
+        return startAudioSrc[index];
+    } else if (type == 'error') {
+        let len = randomAudioSrc.length;
+        let index = getRndInteger(0, len);
+        return randomAudioSrc[index];
+    } else if (type == 'exit') {
+        let len = exitAudioSrc.length;
+        let index = getRndInteger(0, len);
+        return exitAudioSrc[index];
+    }
 }
 
 //获取两个整数之间的随机数
