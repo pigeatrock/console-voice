@@ -36,7 +36,7 @@ async function playAudio(num = 1, type = 'error', voiceType = 'normal', times = 
     for (let i = 0; i < num; i++) {
         await timeOut(delay)
         for (let n = 0; n < len; n++) {
-            playSound(type, voiceType, audioSrc[n] + mimeType, player);
+            await playSound(type, voiceType, audioSrc[n] + mimeType, player);
         }
     }
 }
@@ -64,7 +64,10 @@ async function playSound(type, voiceType, audioSrc, player) {
     } else if (type == 'exit') {
         playSrc = soundSrc
     }
-    await consolePlayer(playSrc, player);
+    return new Promise(async(resolve, reject) => {
+        await consolePlayer(playSrc, player);
+        resolve();
+    })
 }
 
 //语音播放器
