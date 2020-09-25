@@ -18,24 +18,25 @@ var exitAudioSrc = ['exit', 'exit1']; //随机退出语音数组
 // playAudio(2, 'finish', 'normal', 5);
 // playAudio(2, 'error', 'normal');
 // playAudio(2, 'start', 'normal');
-// playAudio(1, 'exit', 'normal');
+// playAudio(3, 'exit', 'normal');
 
 /**
- * 播放语音
+ * 播放语音包
  * @param {int} num 重复播放次数，默认1
  * @param {string} type 语音播放的类型（start,error,finish），默认error
  * @param {string} voiceType 语音的音色，默认normal
  * @param {int} times 出错或者完成的次数，默认1
  * @param {int} delay 每次播放后的间隔秒数，默认1s
+ * @param {string} player 音频播放器，默认inner内置的一个播放器
  */
-async function playAudio(num = 1, type = 'error', voiceType = 'normal', times = 1, delay = 1) {
+async function playAudio(num = 1, type = 'error', voiceType = 'normal', times = 1, delay = 1, player = 'inner') {
     errorTimes = times;
     let audioSrc = voiceSrc(type); //根据错误次数获取实际路径
     let len = audioSrc.length;
     for (let i = 0; i < num; i++) {
         await timeOut(delay)
         for (let n = 0; n < len; n++) {
-            await playSound(type, voiceType, audioSrc[n] + mimeType);
+            playSound(type, voiceType, audioSrc[n] + mimeType, player);
         }
     }
 }
@@ -51,7 +52,7 @@ function timeOut(num = 1) {
 
 
 //播放语音提示
-function playSound(type, voiceType, audioSrc) {
+async function playSound(type, voiceType, audioSrc, player) {
     var playSrc = '';
     let soundSrc = path.join(__dirname, voicePath, voiceType, type, audioSrc);
     if (type == 'finish') {
@@ -63,10 +64,21 @@ function playSound(type, voiceType, audioSrc) {
     } else if (type == 'exit') {
         playSrc = soundSrc
     }
+    await consolePlayer(playSrc, player);
+}
+
+//语音播放器
+function consolePlayer(playSrc, player = 'inner') {
+    var playerUrl = '';
+    if (player == 'inner') {
+        playerUrl = path.join(__dirname, "./other/mpg123.exe");
+    } else {
+        playerUrl = player;
+    }
     return new Promise((resolve, reject) => {
-        var sound = spawn("mpg123.exe", [playSrc]);
-        sound.on('exit', () => {
-            resolve(1);
+        var sound = spawn(playerUrl, [playSrc]);
+        sound.on('exit', (e) => {
+            resolve(e);
         })
     })
 }
@@ -174,4 +186,7 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-module.exports = consoleVoice = playAudio
+module.exports = {
+    consoleVoice: playAudio,
+    consolePlayer
+}
