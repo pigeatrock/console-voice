@@ -1,0 +1,19 @@
+{
+    "name": "@hellorobot/console-voice",
+    "version": "1.0.0",
+    "description": "一个智障的错误提示语音包（a mother fucker error voice pack)",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "error",
+        "console",
+        "voice",
+        "pack",
+        "错误语音包",
+        "智障"
+    ],
+    "author": "hellorobot",
+    "license": "MIT"
+}
