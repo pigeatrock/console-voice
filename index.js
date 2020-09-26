@@ -30,15 +30,18 @@ var exitAudioSrc = ['exit', 'exit1']; //随机退出语音数组
  * @param {string} player 音频播放器，默认inner内置的一个播放器
  */
 async function playAudio(num = 1, type = 'error', voiceType = 'normal', times = 1, delay = 1, player = 'inner') {
-    errorTimes = times;
-    let audioSrc = voiceSrc(type); //根据错误次数获取实际路径
-    let len = audioSrc.length;
-    for (let i = 0; i < num; i++) {
-        await timeOut(delay)
-        for (let n = 0; n < len; n++) {
-            await playSound(type, voiceType, audioSrc[n] + mimeType, player);
+    return new Promise(async(resolve, reject) => {
+        errorTimes = times;
+        let audioSrc = voiceSrc(type); //根据错误次数获取实际路径
+        let len = audioSrc.length;
+        for (let i = 0; i < num; i++) {
+            await timeOut(delay)
+            for (let n = 0; n < len; n++) {
+                await playSound(type, voiceType, audioSrc[n] + mimeType, player);
+            }
         }
-    }
+        resolve()
+    })
 }
 
 //延迟函数

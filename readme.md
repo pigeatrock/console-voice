@@ -3,8 +3,8 @@
 ```javascript
 const { consolePlayer, consoleVoice } = require('./index.js')
 
-consoleVoice(2, 'error', 'normal', 9, 1, 'inner') //播放内置语音包
-consolePlayer("./voice/normal/start/start.mp3", 'inner') //一个小型的windows命令行音频播放器 mpg123
+consoleVoice(2, 'error', 'normal', 9, 1, 'inner').then(() =>{}) //播放内置语音包
+consolePlayer("./voice/normal/start/start.mp3", 'inner').then(() =>{}) //一个小型的windows命令行音频播放器 mpg123
 ```
  * consoleVoice 播放内置语音包
  * @param {int} num 重复播放次数，默认1
